@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Gun : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class Gun : MonoBehaviour
     public int turnspeed;
 
     public GameObject ammo;
+    public List<GameObject> inAirAmmo = new List<GameObject>();
+    
 
     // Use this for initialization
     void Start()
@@ -35,7 +38,21 @@ public class Gun : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Instantiate(ammo, transform.position, transform.rotation);
+            if (inAirAmmo.Count == 3)
+            {
+                if (inAirAmmo[0] != null)
+                {
+                    Destroy(inAirAmmo[0]);
+                }
+                inAirAmmo.RemoveAt(0);
+                inAirAmmo.Add((GameObject)Instantiate(ammo, transform.position, transform.rotation));
+            }
+            else
+            {
+                inAirAmmo.Add((GameObject)Instantiate(ammo, transform.position, transform.rotation));
+            }
+            
+
         }
 
 

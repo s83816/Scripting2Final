@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class addforce : MonoBehaviour {
+public class PlatformBullets : MonoBehaviour {
     Rigidbody rb;
     public GameObject platform;
     public float bulletspeed;
@@ -17,6 +17,7 @@ public class addforce : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody>();
+
     }
 	
 	// Update is called once per frame
