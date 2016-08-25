@@ -12,7 +12,7 @@ public class PlatformBullets : MonoBehaviour {
 
     public bool isstopped;
 
-
+    public bool canTransform = true;
 
 	// Use this for initialization
 	void Start () {
@@ -24,7 +24,7 @@ public class PlatformBullets : MonoBehaviour {
 	void Update () {
 
 
-        if (isstopped == true && Input.GetMouseButtonDown(1))
+        if (isstopped == true && Input.GetMouseButtonDown(1) && canTransform)
         {
             Instantiate(platform,transform.position, Quaternion.identity);
             Destroy(gameObject);
@@ -60,4 +60,20 @@ public class PlatformBullets : MonoBehaviour {
                 rb.velocity = transform.forward * stoptime;
         }
 	}
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if(canTransform)
+                canTransform = false;
+        }
+    }
+    void OnTriggerStay(Collider other)
+    {
+        OnTriggerEnter(other);
+    }
+    void OnTriggerExit(Collider other)
+    {
+        canTransform = true;
+    }
 }
