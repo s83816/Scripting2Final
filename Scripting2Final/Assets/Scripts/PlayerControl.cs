@@ -91,16 +91,23 @@ public class PlayerControl : MonoBehaviour
 
             RaycastHit hitInfo;
             Vector3 checkPosStart = Vector3.zero;
-            checkPosStart.x = transform.position.x + 0.5f * leftOrRight;
-            checkPosStart.y = transform.position.y - 0.99f;
-            for(float i = 0; i < 1f; i += 0.1f)
+            CapsuleCollider col = GetComponent<CapsuleCollider>();
+            checkPosStart.x = transform.position.x + col.radius * leftOrRight;
+            checkPosStart.y = transform.position.y - (col.height/2 - 0.01f);
+            //checkPosStart.y = transform.position.y - 50f;
+            if (Physics.Raycast(checkPosStart, Vector3.up, out hitInfo, 100f, layerMask))
+            {
+                Debug.Log("hit");
+            }
+            for(float i = 0; i < col.height; i += 0.2f)
             {
                 Physics.Raycast(checkPosStart, rayDir, out hitInfo, 0.1f, layerMask);
+                Debug.DrawRay(checkPosStart, rayDir);
                 if (hitInfo.collider != null)
                 {
                     return true;
                 }
-                checkPosStart.y += 0.1f;
+                checkPosStart.y += 0.2f;
             }
 
             //Debug.Log(hitInfo.collider);
