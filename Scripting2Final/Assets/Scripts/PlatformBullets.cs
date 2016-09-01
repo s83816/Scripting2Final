@@ -14,6 +14,7 @@ public class PlatformBullets : MonoBehaviour
     private float tempBulletSpeed;
     public float slowdown;
 
+    public int angle;
 
     public float StartingTime;
 
@@ -62,15 +63,13 @@ public class PlatformBullets : MonoBehaviour
         StartingTime = Time.time;
     }
     void Update()
-    {
-
-
+    { 
 
         if (!platform.activeInHierarchy)
         {
             if (isstopped == true && Input.GetMouseButtonDown(1) && canTransform)
             {
-                transform.rotation = Quaternion.identity;
+                transform.rotation = Quaternion.EulerAngles(0,0, angle);
                 platform.SetActive(true);
                 bulletMesh.SetActive(false);
                 rb.isKinematic = true;
