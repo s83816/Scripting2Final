@@ -35,7 +35,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Floor"))
+        if (other.CompareTag("Floor")|| other.CompareTag("MovingPlatform"))
         {
             canJump = true;
             isJumping = false;
@@ -43,7 +43,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Floor") && !isJumping)
+        if ((other.CompareTag("Floor")|| other.CompareTag("MovingPlatform")) && !isJumping)
         {
             OnTriggerEnter(other);
         }
