@@ -33,7 +33,13 @@ public class PlatformBullets : MonoBehaviour
     void OnCollisionEnter(Collision other)
     {
         if (other.collider.CompareTag("Floor"))
-        { isstopped = true; }
+        {
+            isstopped = true;
+        }
+        if (other.collider.CompareTag("MovingPlatform"))
+        {
+            gameObject.SetActive(false);
+        }
     }
     void OnDisable()
     {
@@ -73,13 +79,13 @@ public class PlatformBullets : MonoBehaviour
             if (transform.position == Endposition)
             {
                 isstopped = true;
-            
+
             }
 
             if (isstopped == false)
             {
                 this.transform.position = Vector3.MoveTowards(transform.position, Endposition, Time.deltaTime * bulletspeed);
-             
+
             }
 
 
