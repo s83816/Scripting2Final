@@ -9,7 +9,9 @@ public class PlayerControl : MonoBehaviour
     bool canJump = false;
     bool isJumping = false;
     float maxVelocityX = 5f;
-    float jumpForce = 5f;
+    float jumpForce = 10f;
+    float jumpTimer = 0.5f;
+    public float jumpCount = 0;
     int layerMask;
 
     void Start()
@@ -37,7 +39,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("Floor"))
+        if (other.CompareTag("Floor") && !isJumping)
         {
             OnTriggerEnter(other);
         }
@@ -57,8 +59,23 @@ public class PlayerControl : MonoBehaviour
         if (canJump && !isJumping && Input.GetButton("Jump"))
         {
             isJumping = true;
+            //jumpCount = jumpTimer;
             rigid.AddRelativeForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
+        else
+        {
+            /*
+            if (jumpCount > 0)
+            {
+                jumpCount -= Time.deltaTime;
+            }
+            else if (jumpCount < 0 && jumpCount != 0)
+            {
+                jumpCount = 0;
+            }
+            */
+        }
+
     }
     void Movement()
     {
@@ -93,7 +110,7 @@ public class PlayerControl : MonoBehaviour
             Vector3 checkPosStart = Vector3.zero;
             checkPosStart.x = transform.position.x + 0.5f * leftOrRight;
             checkPosStart.y = transform.position.y - 0.99f;
-            for(float i = 0; i < 1f; i += 0.1f)
+            for(float i = 0; i < 1f; i += 0.05f)
             {
                 Physics.Raycast(checkPosStart, rayDir, out hitInfo, 0.1f, layerMask);
                 if (hitInfo.collider != null)

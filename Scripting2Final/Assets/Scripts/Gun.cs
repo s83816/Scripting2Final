@@ -9,13 +9,19 @@ public class Gun : MonoBehaviour
     public int turnspeed;
 
     public GameObject ammo;
+    private List<GameObject> pooledAmmos = new List<GameObject>();
     public List<GameObject> inAirAmmo = new List<GameObject>();
-    
+    private int poolAmmoAmount = 10;
 
     // Use this for initialization
     void Start()
     {
+        for(int i = 0; i < poolAmmoAmount; i++)
+        {
+            pooledAmmos.Add(Instantiate(ammo));
+            pooledAmmos[i].SetActive(false);
 
+        }
     }
 
     // Update is called once per frame
@@ -28,7 +34,7 @@ public class Gun : MonoBehaviour
     void aim()
     {
         WorldMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Debug.Log(WorldMouse);
+        //Debug.Log(WorldMouse);
 
         WorldMouse.z = transform.position.z;
         transform.LookAt(WorldMouse);
@@ -42,14 +48,34 @@ public class Gun : MonoBehaviour
             {
                 if (inAirAmmo[0] != null)
                 {
-                    Destroy(inAirAmmo[0]);
+                    inAirAmmo[0].SetActive(false);
                 }
                 inAirAmmo.RemoveAt(0);
-                inAirAmmo.Add((GameObject)Instantiate(ammo, transform.position, transform.rotation));
+                for(int i = 0; i < pooledAmmos.Count; i++)
+                {
+                    if (!pooledAmmos[i].activeInHierarchy)
+                    {
+                        inAirAmmo.Add(pooledAmmos[i]);
+                        pooledAmmos[i].transform.position = transform.position;
+                        pooledAmmos[i].transform.rotation = transform.rotation;
+                        pooledAmmos[i].SetActive(true);
+                        break;
+                    }
+                }
             }
             else
             {
-                inAirAmmo.Add((GameObject)Instantiate(ammo, transform.position, transform.rotation));
+                for (int i = 0; i < pooledAmmos.Count; i++)
+                {
+                    if (!pooledAmmos[i].activeInHierarchy)
+                    {
+                        inAirAmmo.Add(pooledAmmos[i]);
+                        pooledAmmos[i].transform.position = transform.position;
+                        pooledAmmos[i].transform.rotation = transform.rotation;
+                        pooledAmmos[i].SetActive(true);
+                        break;
+                    }
+                }
             }
             
 
