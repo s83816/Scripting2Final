@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PlayerControl : MonoBehaviour
 {
+    public Vector3 checkpoint;
     Rigidbody rigid;
     public int hp = 5;
     bool mL = false;
@@ -20,12 +21,15 @@ public class PlayerControl : MonoBehaviour
 
     void Start()
     {
+        
         rigid = GetComponent<Rigidbody>();
         layerMask = 1 << LayerMask.NameToLayer("Floor");
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        { transform.position = checkpoint; }
         CheckInput();
         //Debug.Log(rigid.velocity);
     }
