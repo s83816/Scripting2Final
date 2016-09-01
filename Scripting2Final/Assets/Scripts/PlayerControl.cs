@@ -4,13 +4,17 @@ using System.Collections;
 public class PlayerControl : MonoBehaviour
 {
     Rigidbody rigid;
+    public int hp = 5;
     bool mL = false;
     bool mR = false;
     bool canJump = false;
     bool isJumping = false;
+
+    bool canTakeDmg = true;
     float maxVelocityX = 5f;
     float jumpForce = 10f;
     float jumpTimer = 0.5f;
+    float invTime = 1f;
     public float jumpCount = 0;
     int layerMask;
 
@@ -124,6 +128,19 @@ public class PlayerControl : MonoBehaviour
 
         }
         return false;
+    }
+    public void DoDmg()
+    {
+        if (canTakeDmg)
+        {
+            canTakeDmg = false;
+            hp--;
+            Invoke("ResetCanTakeDmg", invTime);
+        }
+    }
+    void ResetCanTakeDmg()
+    {
+        canTakeDmg = true;
     }
 
 }
