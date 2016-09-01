@@ -8,6 +8,8 @@ public class Gun : MonoBehaviour
 
     public int turnspeed;
 
+    public PlatformBullets ammoscript;
+
     public GameObject ammo;
     private List<GameObject> pooledAmmos = new List<GameObject>();
     public List<GameObject> inAirAmmo = new List<GameObject>();
@@ -20,8 +22,8 @@ public class Gun : MonoBehaviour
         {
             pooledAmmos.Add(Instantiate(ammo));
             pooledAmmos[i].SetActive(false);
-
         }
+        ammoscript = ammo.GetComponent<PlatformBullets>();
     }
 
     // Update is called once per frame
@@ -41,45 +43,46 @@ public class Gun : MonoBehaviour
         //transform.LookAt(Input.mousePosition);
 
 
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (inAirAmmo.Count == 3)
+      
+            if (Input.GetMouseButtonDown(0))
             {
-                if (inAirAmmo[0] != null)
+
+                if (inAirAmmo.Count == 3)
                 {
-                    inAirAmmo[0].SetActive(false);
-                }
-                inAirAmmo.RemoveAt(0);
-                for(int i = 0; i < pooledAmmos.Count; i++)
-                {
-                    if (!pooledAmmos[i].activeInHierarchy)
+                    if (inAirAmmo[0] != null)
                     {
-                        inAirAmmo.Add(pooledAmmos[i]);
-                        pooledAmmos[i].transform.position = transform.position;
-                        pooledAmmos[i].transform.rotation = transform.rotation;
-                        pooledAmmos[i].SetActive(true);
-                        break;
+                        inAirAmmo[0].SetActive(false);
+                    }
+                    inAirAmmo.RemoveAt(0);
+                    for (int i = 0; i < pooledAmmos.Count; i++)
+                    {
+                        if (!pooledAmmos[i].activeInHierarchy)
+                        {
+                            inAirAmmo.Add(pooledAmmos[i]);
+                            pooledAmmos[i].transform.position = transform.position;
+                            pooledAmmos[i].transform.rotation = transform.rotation;
+                            pooledAmmos[i].SetActive(true);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < pooledAmmos.Count; i++)
+                    {
+                        if (!pooledAmmos[i].activeInHierarchy)
+                        {
+                            inAirAmmo.Add(pooledAmmos[i]);
+                            pooledAmmos[i].transform.position = transform.position;
+                            pooledAmmos[i].transform.rotation = transform.rotation;
+                            pooledAmmos[i].SetActive(true);
+                            break;
+                        }
                     }
                 }
             }
-            else
-            {
-                for (int i = 0; i < pooledAmmos.Count; i++)
-                {
-                    if (!pooledAmmos[i].activeInHierarchy)
-                    {
-                        inAirAmmo.Add(pooledAmmos[i]);
-                        pooledAmmos[i].transform.position = transform.position;
-                        pooledAmmos[i].transform.rotation = transform.rotation;
-                        pooledAmmos[i].SetActive(true);
-                        break;
-                    }
-                }
-            }
-            
 
-        }
+        
 
 
     }

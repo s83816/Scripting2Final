@@ -3,6 +3,10 @@ using System.Collections;
 
 public class PlatformBullets : MonoBehaviour
 {
+    public GameObject Gun;
+    public Vector3 startPosition;
+    public Vector3 Endposition;
+
     Rigidbody rb;
     public GameObject platform;
     public GameObject bulletMesh;
@@ -10,8 +14,8 @@ public class PlatformBullets : MonoBehaviour
     private float tempBulletSpeed;
     public float slowdown;
 
-    public bool withtime;
-    public float stoptime;
+
+    public float StartingTime;
 
     public bool isstopped;
 
@@ -26,18 +30,36 @@ public class PlatformBullets : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         tempBulletSpeed = bulletspeed;
     }
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.collider.CompareTag("Floor"))
+        { isstopped = true; }
+    }
     void OnDisable()
     {
-        if(rb==null)
+        if (rb == null)
             rb = GetComponent<Rigidbody>();
         platform.SetActive(false);
         bulletMesh.SetActive(true);
         rb.isKinematic = false;
         platformExistCount = 0;
         tempBulletSpeed = bulletspeed;
+        isstopped = false;
+    }
+    void OnEnable()
+    {
+        startPosition = transform.position;
+        startPosition.z = 0f;
+
+        Endposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Endposition.z = 0f;
+        StartingTime = Time.time;
     }
     void Update()
     {
+
+
+
         if (!platform.activeInHierarchy)
         {
             if (isstopped == true && Input.GetMouseButtonDown(1) && canTransform)
@@ -47,32 +69,20 @@ public class PlatformBullets : MonoBehaviour
                 bulletMesh.SetActive(false);
                 rb.isKinematic = true;
             }
-            if (withtime == false && tempBulletSpeed > 0)
-            {
-                tempBulletSpeed -= slowdown;
-                rb.velocity = transform.forward * tempBulletSpeed;
-            }
-            if (tempBulletSpeed <= 0)
-            {
-                tempBulletSpeed = 0;
-                isstopped = true;
 
-                if (withtime == false)
-                    rb.velocity = transform.forward * tempBulletSpeed;
-            }
-            if (withtime == true && stoptime > 0)
+            if (transform.position == Endposition)
             {
-                stoptime -= Time.deltaTime;
-                rb.velocity = transform.forward * stoptime;
-            }
-            if (stoptime <= 0)
-            {
-                stoptime = 0;
                 isstopped = true;
-
-                if (withtime == true)
-                    rb.velocity = transform.forward * stoptime;
+            
             }
+
+            if (isstopped == false)
+            {
+                this.transform.position = Vector3.MoveTowards(transform.position, Endposition, Time.deltaTime * bulletspeed);
+             
+            }
+
+
         }
         else
         {
