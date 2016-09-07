@@ -7,6 +7,8 @@ public class PlatformBullets : MonoBehaviour
     public Vector3 startPosition;
     public Vector3 Endposition;
 
+
+
     Rigidbody rb;
     public GameObject platform;
     public GameObject bulletMesh;
@@ -24,13 +26,25 @@ public class PlatformBullets : MonoBehaviour
 
     public float platformExistTime = 5f;
     public float platformExistCount = 0;
+    public Color StartingColor;
+    public Color decayColor;
+    private Color lerpedColor;
 
+    public Renderer[] ChildMaterials;
+    
 
+    //public Renderer[] ChildrenRenderer;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         tempBulletSpeed = bulletspeed;
-    }
+       
+        ChildMaterials = GetComponentsInChildren<Renderer>();
+
+
+ }
+
+    
     void OnCollisionEnter(Collision other)
     {
         if (other.collider.CompareTag("Floor"))
@@ -44,6 +58,7 @@ public class PlatformBullets : MonoBehaviour
     }
     void OnDisable()
     {
+        
         if (rb == null)
             rb = GetComponent<Rigidbody>();
         platform.SetActive(false);
@@ -55,6 +70,7 @@ public class PlatformBullets : MonoBehaviour
     }
     void OnEnable()
     {
+        
         startPosition = transform.position;
         startPosition.z = 0f;
 
@@ -63,8 +79,8 @@ public class PlatformBullets : MonoBehaviour
         StartingTime = Time.time;
     }
     void Update()
-    { 
-
+    {
+        
         if (!platform.activeInHierarchy)
         {
             if (isstopped == true && Input.GetMouseButtonDown(1) && canTransform)
@@ -73,6 +89,7 @@ public class PlatformBullets : MonoBehaviour
                 platform.SetActive(true);
                 bulletMesh.SetActive(false);
                 rb.isKinematic = true;
+                
             }
 
             if (transform.position == Endposition)
@@ -91,13 +108,29 @@ public class PlatformBullets : MonoBehaviour
         }
         else
         {
+            ChildMaterials = GetComponentsInChildren<Renderer>();
+            
             if (platformExistCount >= platformExistTime)
             {
+                lerpedColor = StartingColor;
+               
                 gameObject.SetActive(false);
             }
             else
             {
+
                 platformExistCount += Time.deltaTime;
+                if (platformExistCount / platformExistTime < 1f)
+                lerpedColor = Color.Lerp(StartingColor, decayColor, platformExistCount / platformExistTime);
+
+
+                foreach (var r in ChildMaterials)
+                {
+                    // Do something with the renderer here...
+                    r.material.color = lerpedColor;
+                }
+
+
             }
         }
     }
