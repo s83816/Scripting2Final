@@ -70,7 +70,10 @@ public class PlatformBullets : MonoBehaviour
     }
     void OnEnable()
     {
-        
+        foreach (var r in ChildMaterials)
+        {
+            r.material.color = StartingColor;
+        }
         startPosition = transform.position;
         startPosition.z = 0f;
 
@@ -113,7 +116,6 @@ public class PlatformBullets : MonoBehaviour
             if (platformExistCount >= platformExistTime)
             {
                 lerpedColor = StartingColor;
-               
                 gameObject.SetActive(false);
             }
             else

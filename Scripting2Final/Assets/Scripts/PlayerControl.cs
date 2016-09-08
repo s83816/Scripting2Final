@@ -4,8 +4,10 @@ using System.Collections;
 public class PlayerControl : MonoBehaviour
 {
     public Vector3 checkpoint;
+    public Vector3 Startpoint;
     Rigidbody rigid;
-    public int hp = 5;
+    public int startinghp = 5;
+    private int hp;
     bool mL = false;
     bool mR = false;
     bool canJump = false;
@@ -19,17 +21,35 @@ public class PlayerControl : MonoBehaviour
     public float jumpCount = 0;
     int layerMask;
 
+    public GameObject[] Healthbar;
     void Start()
     {
         
+        Healthbar = new GameObject[5];
+        for(int j = 0; j < Healthbar.Length; j++)
+        { 
+            Healthbar[j] = GameObject.Find("heart"+j.ToString());
+        }
+
         rigid = GetComponent<Rigidbody>();
         layerMask = 1 << LayerMask.NameToLayer("Floor");
+        Startpoint = transform.position;
     }
 
     void Update()
     {
+        //respawn test 
         if (Input.GetKeyDown(KeyCode.R))
-        { transform.position = checkpoint; }
+        {
+            rigid.velocity = Vector3.zero;
+            if (checkpoint != Vector3.zero)
+                transform.position = checkpoint;
+            else
+                transform.position = Startpoint;
+        }
+
+        if (hp <= 0)
+            Respawn();
         CheckInput();
         //Debug.Log(rigid.velocity);
     }
@@ -139,12 +159,31 @@ public class PlayerControl : MonoBehaviour
         {
             canTakeDmg = false;
             hp--;
+            Healthbar[hp].SetActive(false);
             Invoke("ResetCanTakeDmg", invTime);
         }
     }
     void ResetCanTakeDmg()
     {
         canTakeDmg = true;
+    }
+
+    public void Respawn()
+    {
+        //set hp to 5
+        hp = startinghp;
+        //reactivate health images
+        for (int j = 0; j < hp; j++)
+            Healthbar[j].SetActive(true);
+
+        //stop velocity to stop bouncing when respawning
+        rigid.velocity = Vector3.zero;
+
+        //if checkpint is set spawn to checkpoint
+            if (checkpoint != Vector3.zero)
+                transform.position = checkpoint;
+            else
+                transform.position = Startpoint;
     }
 
 }
