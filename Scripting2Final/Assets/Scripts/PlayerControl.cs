@@ -64,7 +64,7 @@ public class PlayerControl : MonoBehaviour
         //respawn test 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            ReturnToCheckPoint();
+            //ReturnToCheckPoint();
         }
 
         if (hp <= 0)

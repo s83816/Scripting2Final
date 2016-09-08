@@ -70,16 +70,21 @@ public class FollowingPlatform : MonoBehaviour
                 {
                     if (hitInfo.collider.CompareTag("PlatformH"))
                     {
-                        hitInfo.collider.GetComponentInParent<PlatformBullets>().Disable();
+                        return false;
                     }
                     return true;
                 }
                 checkPosStart.y += 0.1f;
             }
-
-            //Debug.Log(hitInfo.collider);
-
         }
         return false;
     }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PlatformH"))
+        {
+            other.GetComponentInParent<PlatformBullets>().Disable();           
+        }
+    }
+
 }

@@ -19,8 +19,7 @@ public class Checkpoint : MonoBehaviour
     {
         if (other.collider.CompareTag("Player"))
         {
-            PlayerControl myPlayer = (PlayerControl)GameObject.Find("Player").GetComponent("PlayerControl");
-            myPlayer.checkpoint = other.transform.position;
+            PlayerControl.Instance.CheckPoint = transform.position;
         }
     }
 }
