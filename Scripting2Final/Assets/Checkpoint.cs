@@ -3,24 +3,18 @@ using System.Collections;
 
 public class Checkpoint : MonoBehaviour
 {
-    public Vector3 RespawnPoint;
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
 
     }
-    void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.collider.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            PlayerControl myPlayer = (PlayerControl)GameObject.Find("Player").GetComponent("PlayerControl");
-            myPlayer.checkpoint = other.transform.position;
+            Debug.Log("hit");
+            //PlayerControl myPlayer = (PlayerControl)GameObject.Find("Player").GetComponent("PlayerControl");
+            PlayerControl.Instance.CheckPoint = transform.position;
+            //myPlayer.checkpoint = other.transform.position;
         }
     }
 }

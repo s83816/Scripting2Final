@@ -35,7 +35,7 @@ public class FollowingPlatform : MonoBehaviour
                 if (Vector3.Distance(transform.position, targetLoc) > 3f)
                 {
                     targetLoc.x =  transform.position.x + dir.x * 3f;
-                    Debug.Log(targetLoc.x);
+                    //Debug.Log(targetLoc.x);
                 }
                 Vector3 newPos = Vector3.Slerp(transform.position, targetLoc, Time.deltaTime * moveSpeed);
                 newPos.z = startLoc.z;
@@ -68,6 +68,10 @@ public class FollowingPlatform : MonoBehaviour
                 Physics.Raycast(checkPosStart, rayDir, out hitInfo, 0.2f, layerMask);
                 if (hitInfo.collider != null)
                 {
+                    if (hitInfo.collider.CompareTag("PlatformH"))
+                    {
+                        hitInfo.collider.GetComponentInParent<PlatformBullets>().Disable();
+                    }
                     return true;
                 }
                 checkPosStart.y += 0.1f;

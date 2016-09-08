@@ -38,4 +38,8 @@ public class EnemyBullet : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+    public void IsHit()
+    {
+        Disable();
+    }
 }
