@@ -48,7 +48,7 @@ public class Gun : MonoBehaviour
             if (!inAirAmmo[i].activeInHierarchy)
             {
                 inAirAmmo.RemoveAt(i);
-                i = 0;
+                i--;
             }
         }
         if (Input.GetMouseButtonDown(0))
@@ -68,6 +68,7 @@ public class Gun : MonoBehaviour
                         inAirAmmo.Add(pooledAmmos[i]);
                         pooledAmmos[i].transform.position = transform.position;
                         pooledAmmos[i].transform.rotation = transform.rotation;
+                        pooledAmmos[i].GetComponent<PlatformBullets>().SetProjType(PlayerControl.Instance.ProjType);
                         pooledAmmos[i].SetActive(true);
                         break;
                     }
@@ -83,6 +84,7 @@ public class Gun : MonoBehaviour
                         pooledAmmos[i].transform.position = transform.position;
                         pooledAmmos[i].transform.rotation = transform.rotation;
                         pooledAmmos[i].SetActive(true);
+                        pooledAmmos[i].GetComponent<PlatformBullets>().SetProjType(PlayerControl.Instance.ProjType);
                         break;
                     }
                 }

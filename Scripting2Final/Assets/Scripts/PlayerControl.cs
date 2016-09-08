@@ -1,13 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+public enum ProjectileType
+{
+    Horizontal = 0,
+    Verticle = 1
+}
 public class PlayerControl : MonoBehaviour
 {
+    private static PlayerControl myPlayerControl;
     public Vector3 checkpoint;
     public Vector3 Startpoint;
     Rigidbody rigid;
+
+    public ProjectileType projectileType = ProjectileType.Horizontal;
+    public int hp = 5;
     public int startinghp = 5;
-    private int hp;
     bool mL = false;
     bool mR = false;
     bool canJump = false;
@@ -16,24 +23,40 @@ public class PlayerControl : MonoBehaviour
     bool canTakeDmg = true;
     float maxVelocityX = 5f;
     float jumpForce = 10f;
-    float jumpTimer = 0.5f;
     float invTime = 1f;
     public float jumpCount = 0;
     int layerMask;
 
     public GameObject[] Healthbar;
+    public static PlayerControl Instance
+    {
+        get
+        {
+            if (myPlayerControl == null)
+            {
+                myPlayerControl = FindObjectOfType<PlayerControl>();
+            }
+            return myPlayerControl;
+        }
+    }
+    public ProjectileType ProjType
+    {
+        get
+        {
+            return projectileType;
+        }
+    }
     void Start()
     {
-        
-        Healthbar = new GameObject[5];
-        for(int j = 0; j < Healthbar.Length; j++)
-        { 
-            Healthbar[j] = GameObject.Find("heart"+j.ToString());
-        }
 
         rigid = GetComponent<Rigidbody>();
         layerMask = 1 << LayerMask.NameToLayer("Floor");
         Startpoint = transform.position;
+                Healthbar = new GameObject[5];
+        for(int j = 0; j < Healthbar.Length; j++)
+        { 
+            Healthbar[j] = GameObject.Find("heart"+j.ToString());
+        }
     }
 
     void Update()
@@ -41,17 +64,20 @@ public class PlayerControl : MonoBehaviour
         //respawn test 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            rigid.velocity = Vector3.zero;
-            if (checkpoint != Vector3.zero)
-                transform.position = checkpoint;
-            else
-                transform.position = Startpoint;
+            ReturnToCheckPoint();
         }
 
         if (hp <= 0)
             Respawn();
         CheckInput();
-        //Debug.Log(rigid.velocity);
+    }
+    void ReturnToCheckPoint()
+    {
+        rigid.velocity = Vector3.zero;
+        if( checkpoint != Vector3.zero )
+            transform.position = checkpoint;
+        else
+            transform.position = Startpoint;
     }
     void FixedUpdate()
     {
@@ -59,7 +85,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Floor")|| other.CompareTag("MovingPlatform"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Floor"))
         {
             canJump = true;
             isJumping = false;
@@ -67,7 +93,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-        if ((other.CompareTag("Floor")|| other.CompareTag("MovingPlatform")) && !isJumping)
+        if (other.gameObject.layer == LayerMask.NameToLayer("Floor") && !isJumping)
         {
             OnTriggerEnter(other);
         }
@@ -89,6 +115,18 @@ public class PlayerControl : MonoBehaviour
             isJumping = true;
             //jumpCount = jumpTimer;
             rigid.AddRelativeForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            switch (projectileType)
+            {
+                case ProjectileType.Horizontal:
+                    projectileType = ProjectileType.Verticle;
+                    break;
+                case ProjectileType.Verticle:
+                    projectileType = ProjectileType.Horizontal;
+                    break;
+            }
         }
         else
         {
@@ -138,7 +176,7 @@ public class PlayerControl : MonoBehaviour
             Vector3 checkPosStart = Vector3.zero;
             checkPosStart.x = transform.position.x + 0.5f * leftOrRight;
             checkPosStart.y = transform.position.y - 0.99f;
-            for(float i = 0; i < 1f; i += 0.05f)
+            for (float i = 0; i < 1f; i += 0.05f)
             {
                 Physics.Raycast(checkPosStart, rayDir, out hitInfo, 0.1f, layerMask);
                 if (hitInfo.collider != null)
@@ -167,6 +205,17 @@ public class PlayerControl : MonoBehaviour
     {
         canTakeDmg = true;
     }
+    public Vector3 CheckPoint
+    {
+        set
+        {
+            checkpoint = value + Vector3.up * 2f;
+        }
+    }
+    void CheckHealth()
+    {
+
+    }
 
     public void Respawn()
     {
@@ -174,16 +223,12 @@ public class PlayerControl : MonoBehaviour
         hp = startinghp;
         //reactivate health images
         for (int j = 0; j < hp; j++)
-            Healthbar[j].SetActive(true);
+        {
+            Healthbar[j].SetActive( true );
+        }
+        ReturnToCheckPoint();
 
-        //stop velocity to stop bouncing when respawning
-        rigid.velocity = Vector3.zero;
 
-        //if checkpint is set spawn to checkpoint
-            if (checkpoint != Vector3.zero)
-                transform.position = checkpoint;
-            else
-                transform.position = Startpoint;
     }
 
 }
