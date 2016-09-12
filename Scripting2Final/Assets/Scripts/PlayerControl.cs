@@ -12,7 +12,7 @@ public class PlayerControl : MonoBehaviour
     public Vector3 Startpoint;
     Rigidbody rigid;
 
-    public ProjectileType projectileType = ProjectileType.Horizontal;
+    private ProjectileType projectileType = ProjectileType.Horizontal;
     public int hp = 5;
     public int startinghp = 5;
     bool mL = false;
@@ -26,6 +26,8 @@ public class PlayerControl : MonoBehaviour
     float invTime = 1f;
     public float jumpCount = 0;
     int layerMask;
+
+    private Renderer gunRend;
 
     public GameObject[] Healthbar;
     public static PlayerControl Instance
@@ -48,7 +50,8 @@ public class PlayerControl : MonoBehaviour
     }
     void Start()
     {
-
+        gunRend = FindObjectOfType<Gun>().gameObject.GetComponent<Renderer>();
+        gunRend.material.color = Color.blue;
         rigid = GetComponent<Rigidbody>();
         layerMask = 1 << LayerMask.NameToLayer("Floor");
         Startpoint = transform.position;
@@ -66,7 +69,7 @@ public class PlayerControl : MonoBehaviour
         {
             //ReturnToCheckPoint();
         }
-
+        
         if (hp <= 0)
             Respawn();
         CheckInput();
@@ -118,15 +121,7 @@ public class PlayerControl : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            switch (projectileType)
-            {
-                case ProjectileType.Horizontal:
-                    projectileType = ProjectileType.Verticle;
-                    break;
-                case ProjectileType.Verticle:
-                    projectileType = ProjectileType.Horizontal;
-                    break;
-            }
+            SwitchProj();
         }
         else
         {
@@ -227,8 +222,19 @@ public class PlayerControl : MonoBehaviour
             Healthbar[j].SetActive( true );
         }
         ReturnToCheckPoint();
-
-
     }
-
+    private void SwitchProj()
+    {
+        switch (projectileType)
+        {
+            case ProjectileType.Horizontal:
+                gunRend.material.color = Color.green;
+                projectileType = ProjectileType.Verticle;
+                break;
+            case ProjectileType.Verticle:
+                gunRend.material.color = Color.blue;
+                projectileType = ProjectileType.Horizontal;
+                break;
+        }
+    }
 }

@@ -30,9 +30,22 @@ public class Gun : MonoBehaviour
     void Update()
     {
         aim();
-
+        if (Input.GetMouseButtonDown(1))
+        {
+            ActivateBullet();
+        }
     }
-
+    void ActivateBullet()
+    {
+        for (int i = 0; i < inAirAmmo.Count; i++)
+        {
+            if (inAirAmmo[i].activeInHierarchy && !inAirAmmo[i].GetComponent<PlatformBullets>().Activated)
+            {
+                inAirAmmo[i].GetComponent<PlatformBullets>().ActivatePlatform();
+                break;
+            }
+        }
+    }
     void aim()
     {
         WorldMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -67,8 +80,8 @@ public class Gun : MonoBehaviour
                     {
                         inAirAmmo.Add(pooledAmmos[i]);
                         pooledAmmos[i].transform.position = transform.position;
-                        pooledAmmos[i].transform.rotation = transform.rotation;
                         pooledAmmos[i].GetComponent<PlatformBullets>().SetProjType(PlayerControl.Instance.ProjType);
+                        pooledAmmos[i].transform.rotation = transform.rotation;
                         pooledAmmos[i].SetActive(true);
                         break;
                     }
@@ -83,8 +96,8 @@ public class Gun : MonoBehaviour
                         inAirAmmo.Add(pooledAmmos[i]);
                         pooledAmmos[i].transform.position = transform.position;
                         pooledAmmos[i].transform.rotation = transform.rotation;
-                        pooledAmmos[i].SetActive(true);
                         pooledAmmos[i].GetComponent<PlatformBullets>().SetProjType(PlayerControl.Instance.ProjType);
+                        pooledAmmos[i].SetActive(true);
                         break;
                     }
                 }

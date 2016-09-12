@@ -26,6 +26,8 @@ public class PlatformBullets : MonoBehaviour
 
     public bool canTransform = true;
 
+    private bool activated = false;
+
     public float platformExistTime = 10f;
     public float platformExistCount = 0;
     public Color StartingColor;
@@ -34,6 +36,7 @@ public class PlatformBullets : MonoBehaviour
 
     public Renderer[] ChildMaterials;
 
+    private float moveImpulse = 40f;
 
     //public Renderer[] ChildrenRenderer;
     void Start()
@@ -54,7 +57,9 @@ public class PlatformBullets : MonoBehaviour
     {
         if (other.collider.CompareTag("Floor"))
         {
-            isstopped = true;
+            //isstopped = true;
+            //GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().drag = 0.5f;
         }
         if (other.collider.CompareTag("MovingPlatform"))
         {
@@ -67,7 +72,8 @@ public class PlatformBullets : MonoBehaviour
     }
     void OnDisable()
     {
-
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        activated = false;
         if (rb == null)
             rb = GetComponent<Rigidbody>();
         if (platform.Count > 0)
@@ -86,13 +92,28 @@ public class PlatformBullets : MonoBehaviour
     }
     void OnEnable()
     {
-
+        GetComponent<Rigidbody>().drag = 0.1f;
+        GetComponent<Rigidbody>().isKinematic = false;
         startPosition = transform.position;
         startPosition.z = 0f;
-
         Endposition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Endposition.z = 0f;
+        Vector3 dir = ((Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position)).normalized;
+        dir.z = 0f;
+        //Debug.Log(dir);
+        GetComponent<Rigidbody>().AddForce(dir * moveImpulse, ForceMode.Impulse);
         StartingTime = Time.time;
+        switch (projT)
+        {
+            case ProjectileType.Horizontal:
+                bulletMesh.GetComponent<Renderer>().material.color = Color.blue;
+                StartingColor = Color.blue;
+                break;
+            case ProjectileType.Verticle:
+                bulletMesh.GetComponent<Renderer>().material.color = Color.green;
+                StartingColor = Color.green;
+                break;
+        }
     }
     public void SetProjType(ProjectileType type)
     {
@@ -103,25 +124,22 @@ public class PlatformBullets : MonoBehaviour
 
         if (!platform[projT].activeInHierarchy)
         {
-            if (isstopped == true && Input.GetMouseButtonDown(1) && canTransform)
-            {
-                transform.rotation = Quaternion.Euler(0, 0, angle);
-                platform[projT].SetActive(true);
-                bulletMesh.SetActive(false);
-                //rb.isKinematic = true;
-
-            }
-
+            /*
             if (transform.position == Endposition)
             {
                 isstopped = true;
 
             }
+            */
 
             if (isstopped == false)
             {
-                this.transform.position = Vector3.MoveTowards(transform.position, Endposition, Time.deltaTime * bulletspeed);
-
+                //this.transform.position = Vector3.MoveTowards(transform.position, Endposition, Time.deltaTime * bulletspeed);
+                if (Vector3.Distance(transform.position, Endposition) < 0.1f)
+                {
+                    GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    //GetComponent<Rigidbody>().isKinematic = true;
+                }
             }
 
 
@@ -162,6 +180,10 @@ public class PlatformBullets : MonoBehaviour
                     canTransform = false;
             }
         }
+        if(other.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        {
+            isstopped = true;
+        }
     }
     void OnTriggerStay(Collider other)
     {
@@ -175,5 +197,25 @@ public class PlatformBullets : MonoBehaviour
     {
         lerpedColor = StartingColor;
         gameObject.SetActive(false);
+    }
+    public void ActivatePlatform()
+    {
+        if (canTransform)
+        {
+            activated = true;
+            GetComponent<Rigidbody>().isKinematic = true;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+            platform[projT].SetActive(true);
+            bulletMesh.SetActive(false);
+            //rb.isKinematic = true;
+
+        }
+    }
+    public bool Activated
+    {
+        get
+        {
+            return activated;
+        }
     }
 }

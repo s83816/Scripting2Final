@@ -9,6 +9,7 @@ public class EnemyBullet : MonoBehaviour
     void Start()
     {
         rigid = GetComponent<Rigidbody>();
+        GetComponent<Renderer>().material.color = Color.red;
     }
     void OnDisable()
     {

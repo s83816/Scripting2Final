@@ -17,6 +17,7 @@ public class FollowingPlatform : MonoBehaviour
     {
         startLoc = transform.position;
         canMove = true;
+        GetComponent<Renderer>().material.color = Color.green;
     }
     void SetCanMove()
     {
