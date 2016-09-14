@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 public enum ProjectileType
 {
@@ -16,6 +17,10 @@ public class PlayerControl : MonoBehaviour
     private ProjectileType projectileType = ProjectileType.Horizontal;
     public int hp = 5;
     public int startinghp = 5;
+    public float flashSpeed = 5f;
+    public Color flashColour = new Color(1f, 0f, 0f, 0.1f);
+    public Image damageImage;
+
     bool mL = false;
     bool mR = false;
     bool canJump = false;
@@ -51,6 +56,7 @@ public class PlayerControl : MonoBehaviour
     }
     void Start()
     {
+        damageImage = GameObject.Find("redflash").GetComponent<Image>();
         gunRend = barrel.GetComponent<Renderer>();
         gunRend.material.color = Color.blue;
         rigid = GetComponent<Rigidbody>();
@@ -77,6 +83,7 @@ public class PlayerControl : MonoBehaviour
                 Respawn();
             CheckInput();
         }
+        ResetScreenColor();
     }
     void ReturnToCheckPoint()
     {
@@ -194,12 +201,16 @@ public class PlayerControl : MonoBehaviour
     {
         if (canTakeDmg)
         {
+            
             canTakeDmg = false;
             hp--;
             Healthbar[hp].SetActive(false);
             Invoke("ResetCanTakeDmg", invTime);
+            Invoke("ResetScreenColor", 0);
+            damageImage.color = flashColour;
         }
     }
+    
     void ResetCanTakeDmg()
     {
         canTakeDmg = true;
@@ -211,6 +222,21 @@ public class PlayerControl : MonoBehaviour
             checkpoint = value + Vector3.up * 2f;
         }
     }
+    void ResetScreenColor()
+    {
+        var timer =0f;
+
+        timer += Time.deltaTime*0.7f;
+        if (timer < invTime)
+        {      
+        damageImage.color = Color.Lerp(damageImage.color, Color.clear, Mathf.MoveTowards(0, 1, timer));
+        }
+
+        
+    }
+            
+
+
     void CheckHealth()
     {
 

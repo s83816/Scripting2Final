@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -38,7 +37,7 @@ public class UIManager : MonoBehaviour
     }
     public void PlayAgain()
     {
-        SceneManager.LoadScene("level01");
+        Application.LoadLevel(("level01"));
         
     }
 }
