@@ -88,7 +88,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Floor") || other.gameObject.layer == LayerMask.NameToLayer("Turret"))
         {
             canJump = true;
             isJumping = false;
@@ -96,7 +96,7 @@ public class PlayerControl : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Floor") && !isJumping)
+        if ((other.gameObject.layer == LayerMask.NameToLayer("Floor")|| other.gameObject.layer == LayerMask.NameToLayer("Turret")) && !isJumping)
         {
             OnTriggerEnter(other);
         }

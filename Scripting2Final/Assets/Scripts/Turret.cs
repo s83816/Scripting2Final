@@ -15,7 +15,8 @@ public class Turret : MonoBehaviour
     List<GameObject> pooledBullets = new List<GameObject>();
     private int bulletAmount = 20;
     private float shootForce = 9f;
-
+    public float startDelay = 0.5f;
+    public float shootFrequency = 1f;
     void Start()
     {
         for(int i = 0; i < bulletAmount; i++)
@@ -25,13 +26,9 @@ public class Turret : MonoBehaviour
             pooledBullets[i].transform.localPosition = Vector3.zero;
             pooledBullets[i].SetActive(false);
         }
-        InvokeRepeating("Shoot", 0.5f, 0.5f);
+        InvokeRepeating("Shoot", startDelay, shootFrequency);
     }
 
-    void Update()
-    {
-
-    }
     void Shoot()
     {
         //Debug.Log("run");

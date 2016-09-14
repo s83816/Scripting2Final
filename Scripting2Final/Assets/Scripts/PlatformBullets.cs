@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class PlatformBullets : MonoBehaviour
 {
-    public GameObject Gun;
     public Vector3 startPosition;
     public Vector3 Endposition;
     public ProjectileType projT = ProjectileType.Horizontal;
@@ -14,8 +13,6 @@ public class PlatformBullets : MonoBehaviour
     public Dictionary<ProjectileType, GameObject> platform = new Dictionary<ProjectileType, GameObject>();
     public List<GameObject> platforms = new List<GameObject>();
     public GameObject bulletMesh;
-    public float bulletspeed;
-    private float tempBulletSpeed;
     public float slowdown;
 
     public int angle;
@@ -26,9 +23,9 @@ public class PlatformBullets : MonoBehaviour
 
     public bool canTransform = true;
 
-    private bool activated = false;
+    protected bool activated = false;
 
-    public float platformExistTime = 10f;
+    public float platformExistTime = 15f;
     public float platformExistCount = 0;
     public Color StartingColor;
     public Color decayColor;
@@ -36,13 +33,12 @@ public class PlatformBullets : MonoBehaviour
 
     public Renderer[] ChildMaterials;
 
-    private float moveImpulse = 40f;
+    protected float moveImpulse = 40f;
 
     //public Renderer[] ChildrenRenderer;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        tempBulletSpeed = bulletspeed;
         ChildMaterials = GetComponentsInChildren<Renderer>();
         if (platforms.Count >= 2)
         {
@@ -87,7 +83,6 @@ public class PlatformBullets : MonoBehaviour
         bulletMesh.SetActive(true);
         //rb.isKinematic = false;
         platformExistCount = 0;
-        tempBulletSpeed = bulletspeed;
         isstopped = false;
     }
     void OnEnable()
@@ -124,21 +119,12 @@ public class PlatformBullets : MonoBehaviour
 
         if (!platform[projT].activeInHierarchy)
         {
-            /*
-            if (transform.position == Endposition)
-            {
-                isstopped = true;
-
-            }
-            */
 
             if (isstopped == false)
             {
-                //this.transform.position = Vector3.MoveTowards(transform.position, Endposition, Time.deltaTime * bulletspeed);
                 if (Vector3.Distance(transform.position, Endposition) < 0.1f)
                 {
                     GetComponent<Rigidbody>().velocity = Vector3.zero;
-                    //GetComponent<Rigidbody>().isKinematic = true;
                 }
             }
 

@@ -34,6 +34,10 @@ public class EnemyBullet : MonoBehaviour
                 Disable();
             }
         }
+        else if(other.gameObject.layer == LayerMask.NameToLayer("Floor"))
+        {
+            Disable();
+        }
     }
     void Disable()
     {

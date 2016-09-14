@@ -6,7 +6,7 @@ public class CameraControl : MonoBehaviour
     GameObject target;
     float yFalloff = 2f;
     float mSpeed = 4f;
-    float maxX = 5f;
+    float maxX = 10f;
     void Start()
     {
         target = FindObjectOfType<PlayerControl>().gameObject;
