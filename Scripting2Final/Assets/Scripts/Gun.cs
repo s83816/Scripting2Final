@@ -22,7 +22,7 @@ public class Gun : MonoBehaviour
     private Transform preAimBulletHolder;
     private Transform trailHolder;
     private int poolAmmoAmount = 10;
-    private int preAimPooledAmount = 20;
+    private int preAimPooledAmount = 5;
     private int trailPooledAmount = 30;
 
     // Use this for initialization
@@ -57,12 +57,14 @@ public class Gun : MonoBehaviour
     }  
     void Update()
     {
-        aim();
-        if (Input.GetMouseButtonDown(1))
+        if (PlayerControl.Instance.CanMove)
         {
-            ActivateBullet();
-        }
-        
+            aim();
+            if (Input.GetMouseButtonDown(1))
+            {
+                ActivateBullet();
+            }
+        }       
     }
     public void PreAim()
     {

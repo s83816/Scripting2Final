@@ -8,7 +8,6 @@ public class PlatformBullets : MonoBehaviour
     public Vector3 Endposition;
     public ProjectileType projT = ProjectileType.Horizontal;
 
-
     Rigidbody rb;
     public Dictionary<ProjectileType, GameObject> platform = new Dictionary<ProjectileType, GameObject>();
     public List<GameObject> platforms = new List<GameObject>();
@@ -122,7 +121,7 @@ public class PlatformBullets : MonoBehaviour
 
             if (isstopped == false)
             {
-                if (Vector3.Distance(transform.position, Endposition) < 0.1f)
+                if (Vector3.Distance(transform.position, Endposition) < 0.5f)
                 {
                     GetComponent<Rigidbody>().velocity = Vector3.zero;
                 }

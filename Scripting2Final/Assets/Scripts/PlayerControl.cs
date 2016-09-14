@@ -11,6 +11,7 @@ public class PlayerControl : MonoBehaviour
     public Vector3 checkpoint;
     public Vector3 Startpoint;
     Rigidbody rigid;
+    public GameObject barrel;
 
     private ProjectileType projectileType = ProjectileType.Horizontal;
     public int hp = 5;
@@ -26,7 +27,7 @@ public class PlayerControl : MonoBehaviour
     float invTime = 1f;
     public float jumpCount = 0;
     int layerMask;
-
+    private bool canMove = true;
     private Renderer gunRend;
 
     public GameObject[] Healthbar;
@@ -50,7 +51,7 @@ public class PlayerControl : MonoBehaviour
     }
     void Start()
     {
-        gunRend = FindObjectOfType<Gun>().gameObject.GetComponent<Renderer>();
+        gunRend = barrel.GetComponent<Renderer>();
         gunRend.material.color = Color.blue;
         rigid = GetComponent<Rigidbody>();
         layerMask = 1 << LayerMask.NameToLayer("Floor");
@@ -65,14 +66,17 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         //respawn test 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (canMove)
         {
-            //ReturnToCheckPoint();
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                ReturnToCheckPoint();
+            }
+
+            if (hp <= 0)
+                Respawn();
+            CheckInput();
         }
-        
-        if (hp <= 0)
-            Respawn();
-        CheckInput();
     }
     void ReturnToCheckPoint()
     {
@@ -235,6 +239,17 @@ public class PlayerControl : MonoBehaviour
                 gunRend.material.color = Color.blue;
                 projectileType = ProjectileType.Horizontal;
                 break;
+        }
+    }
+    public bool CanMove
+    {
+        get
+        {
+            return canMove;
+        }
+        set
+        {
+            canMove = value;
         }
     }
 }

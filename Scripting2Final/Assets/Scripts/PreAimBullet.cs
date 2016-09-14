@@ -11,7 +11,6 @@ public class PreAimBullet : MonoBehaviour
     float distanceTravel = 0;
     float totalDis = 0;
     float spawnTrailDistance = 0.5f;
-    private List<GameObject> spawnedTrails = new List<GameObject>();
     void OnEnable()
     {
         GetComponent<Rigidbody>().drag = 0.2f;
@@ -33,7 +32,7 @@ public class PreAimBullet : MonoBehaviour
     }
     void Update()
     {
-        if (Vector3.Distance(transform.position, Endposition) < 0.3f)
+        if (Vector3.Distance(transform.position, Endposition) < 0.5f)
         {
             Disable();
         }
